@@ -5,13 +5,11 @@ import type { BodyLandmarks } from "./landmarks";
 import { type Region, dominantRegions } from "./shell";
 import { buildSkirt } from "./skirt";
 
-// Accessories fitted to the body mesh itself (bind pose, model metres, +Z forward, +X to the wearer's left), so they
-// lie on either build and any physique, and skinned like the garments so they bend with the clothes they lie on.
-// The surface they are fitted to is the outermost layer: the tunic 16 mm off the skin and the cape yoke 12 mm off the
-// tunic (garments.ts), with the skirt raised to match. The collar and hood lie on it; the sash is worn under a cape, so
-// it sinks back to the tunic and the yoke covers it.
+// Accessories fitted to the body mesh (bind pose, model metres, +Z forward, +X to the wearer's left) and skinned like
+// the garments. They are fitted to the outermost layer: the tunic 16 mm off the skin and the cape yoke 10 mm off the
+// tunic (garments.ts), the skirt raised to match. The sash is worn under a cape, so it sinks back to the tunic.
 const TUNIC = 0.016;
-const YOKE_LIFT = 0.012;
+const YOKE_LIFT = 0.01;
 const CELL = 0.01;
 const SKIN_CELL = 0.03;
 const SKIN_BLEND = { count: 6, maxRings: 4, softening: 0.005 };
@@ -30,24 +28,22 @@ const SASH = {
   spacing: 0.01,
   repeatMetres: 0.12,
 };
-// The standing collar is taller at the back than at its open front, and a little oval so it hugs the back of the neck.
 const COLLAR = { clearance: 0.03, depthRatio: 0.8, height: { back: 0.075, front: 0.045 }, flare: 0.03, frontOpening: 2.1, piping: 0.006, columns: 40, rows: 6 };
-// A lowered hood: a soft roll around the back of the neck from collarbone to collarbone, and the hood itself folded
-// into a pouch on the upper back, both just outside the collar.
 const HOOD = {
   reach: 0.07,
   depthRatio: 0.55,
   frontOpening: 1.5,
   roll: { front: 0.018, back: 0.034 },
   rollEnds: 0.08,
-  pouch: { spread: 1.1, length: 0.22, bulge: 0.06, folds: 3, foldDepth: 0.45, columns: 24, rows: 12 },
+  rollSteps: 36,
+  pouch: { spread: 1.1, length: 0.22, bulge: 0.06, swellEnds: 0.7, leavesRoll: 0.33, folds: 3, foldDepth: 0.45, columns: 24, rows: 12 },
 };
 
 // Helpers
 
 type Point2 = readonly [number, number];
 type Triangle = readonly [THREE.Vector3, THREE.Vector3, THREE.Vector3];
-export type Influence = { at: THREE.Vector3; joints: number[]; weights: number[] };
+type Influence = { at: THREE.Vector3; joints: number[]; weights: number[] };
 
 // The outline of a cross-section around its centre: the farthest point in each direction, with hollows up to
 // `bridge` bins wide filled in and the corners that leaves rounded off, never inside the section.
@@ -463,8 +459,7 @@ function buildSash(surface: ClothedSurface, landmarks: BodyLandmarks) {
   return geometry;
 }
 
-// A standing collar open at the front, so it clears the chin and a beard: it rises off the shoulders around the back
-// and sides of the neck and flares a little at the top.
+// Open at the front so it clears the chin and a beard; taller at the back and a little oval to hug the neck.
 function buildCollar(surface: ClothedSurface, neck: ReturnType<typeof neckOf>, landmarks: BodyLandmarks) {
   const reach = neck.radius + COLLAR.clearance;
   const start = COLLAR.frontOpening / 2;
@@ -496,7 +491,6 @@ function buildCollar(surface: ClothedSurface, neck: ReturnType<typeof neckOf>, l
   return { sheet, piping: tube(rim, COLLAR.piping, 6, false) };
 }
 
-// Missing lookups (cells the back's z-buffer never covered) take the nearest found value along the row.
 function filledGaps(values: readonly (number | undefined)[]) {
   return values.map((value, at) => {
     for (let distance = 0; value === undefined && distance < values.length; distance++) {
@@ -535,7 +529,7 @@ function buildHood(surface: ClothedSurface, neck: ReturnType<typeof neckOf>, lan
   };
   const start = HOOD.frontOpening / 2;
   const sweep = Math.PI * 2 - HOOD.frontOpening;
-  const rollSteps = 36;
+  const { rollSteps } = HOOD;
   const roll = Array.from({ length: rollSteps + 1 }, (_, step) => rollAt(start + (step / rollSteps) * sweep));
   smoothHeights(roll, 3);
   const rollGeometry = swellingTube(
@@ -543,7 +537,7 @@ function buildHood(surface: ClothedSurface, neck: ReturnType<typeof neckOf>, lan
     (along) => rollRadius(start + along * sweep) * Math.sqrt(Math.min(1, along / HOOD.rollEnds, (1 - along) / HOOD.rollEnds)),
   );
 
-  const { spread, length, bulge, folds, foldDepth, columns, rows } = HOOD.pouch;
+  const { spread, length, bulge, swellEnds, leavesRoll, folds, foldDepth, columns, rows } = HOOD.pouch;
   const positions: number[] = [];
   const uvs: number[] = [];
   const tops = Array.from({ length: columns + 1 }, (_, column) => {
@@ -559,9 +553,9 @@ function buildHood(surface: ClothedSurface, neck: ReturnType<typeof neckOf>, lan
     spots.forEach(({ top, x, y }, column) => {
       const across = (column / columns) * 2 - 1;
       const fold = 1 + foldDepth * Math.cos(across * folds * Math.PI);
-      const swell = bulge * Math.sin(Math.PI * Math.min(1, down * 1.4)) * Math.sqrt(1 - across * across) * fold;
+      const swell = bulge * Math.sin(Math.PI * Math.min(1, down / swellEnds)) * Math.sqrt(1 - across * across) * fold;
       const back = Math.min(backs[column] ?? top.z, top.z);
-      positions.push(x, y, THREE.MathUtils.lerp(top.z, back, Math.min(1, down * 3)) - swell);
+      positions.push(x, y, THREE.MathUtils.lerp(top.z, back, Math.min(1, down / leavesRoll)) - swell);
       uvs.push(column / columns, down);
     });
   }

@@ -31,7 +31,7 @@ function Worn({ body, geometry, material }: WornProps) {
 
 export function ChestAccents({ look, choices, landmarks, bulk, body }: Props) {
   const shapes = accentShapesFor(landmarks, bulk);
-  const fitted = fittedAccentsFor(body, look.outfit, landmarks, bulk);
+  const fitted = choices.sash || choices.collar || choices.hood ? fittedAccentsFor(body, look.outfit, landmarks, bulk) : null;
   return (
     <>
       <ClothDetail look={look} />
@@ -41,15 +41,15 @@ export function ChestAccents({ look, choices, landmarks, bulk, body }: Props) {
           <mesh geometry={shapes.pendant.stone} material={look.gem} />
         </NearOnly>
       )}
-      {choices.sash && <Worn body={body} geometry={fitted.sash} material={look.trim} />}
-      {choices.collar && (
+      {fitted && choices.sash && <Worn body={body} geometry={fitted.sash} material={look.trim} />}
+      {fitted && choices.collar && (
         <>
           <Worn body={body} geometry={fitted.collar.sheet} material={look.trim} />
           <Worn body={body} geometry={fitted.collar.sheet} material={look.liningInside} />
           <Worn body={body} geometry={fitted.collar.piping} material={look.gold} />
         </>
       )}
-      {choices.hood && (
+      {fitted && choices.hood && (
         <>
           <Worn body={body} geometry={fitted.hood.roll} material={look.cape} />
           <Worn body={body} geometry={fitted.hood.pouch} material={look.cape} />
