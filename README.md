@@ -120,4 +120,9 @@ Characters, hairstyles, animations, boots and pauldrons are by [Quaternius](http
 
 ## What's next
 
-More features are on the way. Ideas so far: signing in with GitHub in the browser so it can be hosted for others, watching several repositories at once, and showing review requests waiting on you.
+More features are on the way. Planned so far:
+
+- **Claude at work:** show when a Claude Code session is currently iterating on one of your pushed PRs, so you can see at a glance which wizards have an AI apprentice brewing alongside them right now.
+- **Sign in with GitHub** in the browser, so it can be hosted for others instead of run locally.
+- **Several repositories** watched at once.
+- **Review requests** waiting on you, alongside your own PRs.
