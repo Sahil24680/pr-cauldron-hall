@@ -10,7 +10,7 @@ import { type HumanMotion, HumanWizard, STONE_PALETTE, WizardCape, stagePalette,
 import { WIZARD_HEIGHT } from "../characters/wizard/proportions";
 import { softDot } from "../effects/softDot";
 import { SceneLabel } from "../labels/SceneLabel";
-import { DOOR, type Point, type Station, routeBetween, routeFromDoor } from "../layout";
+import { DOOR, type Station, routeBetween, routeFromDoor } from "../layout";
 import { Broom } from "../props/Broom";
 import { MAGIC_COLORS } from "./magicColors";
 import { usePullRequestTarget } from "./targets";
@@ -156,7 +156,7 @@ export function Wizard({ pr, station, now, arriving, departure, dimmed, selected
     position: arriving ? { ...DOOR } : { ...station.spot },
     lift: 0,
     facing: arriving ? Math.PI : station.facing,
-    route: (arriving ? routeFromDoor(station) : []) as Point[],
+    route: arriving ? routeFromDoor(station) : [],
     station,
     opacity: arriving ? 0 : 1,
     departedFor: 0,

@@ -31,7 +31,8 @@
         "noUnusedVariables": "error"
       },
       "suspicious": {
-        "noArrayIndexKey": "off"
+        "noArrayIndexKey": "off",
+        "noExplicitAny": "error"
       },
       "a11y": {
         "noSvgWithoutTitle": "off"

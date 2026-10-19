@@ -108,7 +108,8 @@ export function offsetLoop(loop: readonly Point2[], spacing: number, standOff: n
     const after = along[(index + 1) % along.length] ?? point;
     const length = Math.hypot(after[0] - before[0], after[1] - before[1]) || 1;
     const outward: Point2 = [(after[1] - before[1]) / length, -(after[0] - before[0]) / length];
-    return { at: [point[0] + outward[0] * standOff, point[1] + outward[1] * standOff] as Point2, outward };
+    const at: Point2 = [point[0] + outward[0] * standOff, point[1] + outward[1] * standOff];
+    return { at, outward };
   });
 }
 

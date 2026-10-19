@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
+import { z } from "zod";
 import type { PullRequest } from "../../shared/board";
 import { MAX_ADDED_LINES, findCiState, isReadyToMerge, isStale } from "../../shared/stage";
 
-export type FlagId = "ready" | "cursed" | "splinched" | "petrified" | "heavy";
+const FLAG_IDS = ["ready", "cursed", "splinched", "petrified", "heavy"] as const;
+export type FlagId = (typeof FLAG_IDS)[number];
 export type Filters = { query: string; people: string[]; flag: FlagId | null };
 
-export const FLAGS: { id: FlagId; label: string; hint: string; test: (pr: PullRequest, now: number) => boolean }[] = [
+type Flag = { id: FlagId; label: string; hint: string; test: (pr: PullRequest, now: number) => boolean };
+
+export const FLAGS: Flag[] = [
   { id: "ready", label: "Ready to fly", hint: "Approved, green, no conflict", test: (pr) => isReadyToMerge(pr) },
   { id: "cursed", label: "Cursed CI", hint: "A check is failing", test: (pr) => findCiState(pr) === "failing" },
   { id: "splinched", label: "Splinched", hint: "Merge conflict", test: (pr) => pr.mergeable === "CONFLICTING" },
@@ -15,11 +19,20 @@ export const FLAGS: { id: FlagId; label: string; hint: string; test: (pr: PullRe
 
 const STORAGE_KEY = "pr-board-filters";
 const EMPTY_FILTERS: Filters = { query: "", people: [], flag: null };
+const savedFiltersSchema = z
+  .object({
+    people: z.array(z.string()).catch(EMPTY_FILTERS.people),
+    flag: z.enum(FLAG_IDS).nullable().catch(EMPTY_FILTERS.flag),
+  })
+  .catch(EMPTY_FILTERS);
 
-function loadFilters(): Filters {
+export function parseSavedFilters(saved: unknown): Filters {
+  return { ...savedFiltersSchema.parse(saved), query: "" };
+}
+
+function loadFilters() {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? { ...EMPTY_FILTERS, ...JSON.parse(saved), query: "" } : EMPTY_FILTERS;
+    return parseSavedFilters(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null"));
   } catch {
     return EMPTY_FILTERS;
   }

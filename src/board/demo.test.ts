@@ -7,13 +7,15 @@ function boardOf(pullRequests: PullRequest[]): Board {
   return { repo: "example/repo", viewer: "wizard", fetchedAt: "2026-10-19T00:00:00.000Z", pullRequests, events: [] };
 }
 
+type DemoRun = { board: Board; kinds: string[] };
+
 function runSteps(steps: DemoStep[], board: Board) {
-  return steps.reduce(
+  return steps.reduce<DemoRun>(
     (state, step) => {
       const result = step(state.board);
       return result ? { board: result.board, kinds: [...state.kinds, result.event.kind] } : state;
     },
-    { board, kinds: [] as string[] },
+    { board, kinds: [] },
   );
 }
 

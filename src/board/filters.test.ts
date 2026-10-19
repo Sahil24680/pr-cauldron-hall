@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { makePullRequest } from "../../test/factories";
-import { type Filters, isFiltering, matchesFilters } from "./filters";
+import { type Filters, isFiltering, matchesFilters, parseSavedFilters } from "./filters";
 
 const NOW = new Date("2026-10-19T00:00:00.000Z").getTime();
 const none: Filters = { query: "", people: [], flag: null };
@@ -27,5 +27,16 @@ describe("matchesFilters", () => {
     const red = makePullRequest({ checks: { passing: 1, failing: ["lint"], running: [] } });
     expect(matchesFilters(red, { ...none, flag: "cursed" }, NOW)).toBe(true);
     expect(matchesFilters(makePullRequest(), { ...none, flag: "cursed" }, NOW)).toBe(false);
+  });
+});
+
+describe("parseSavedFilters", () => {
+  it("restores saved people and flag but never the search text", () => {
+    expect(parseSavedFilters({ query: "old", people: ["ana"], flag: "heavy" })).toEqual({ query: "", people: ["ana"], flag: "heavy" });
+  });
+
+  it("drops fields that no longer fit", () => {
+    expect(parseSavedFilters({ people: "ana", flag: "unknown" })).toEqual(none);
+    expect(parseSavedFilters(null)).toEqual(none);
   });
 });
