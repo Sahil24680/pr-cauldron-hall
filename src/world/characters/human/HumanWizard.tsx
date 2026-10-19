@@ -125,6 +125,16 @@ function useHumanModel(appearance: Appearance, look: WizardLook) {
   return { model, mixer, animations };
 }
 
+function clipRate(spec: (typeof MOTION_CLIPS)[HumanMotion], pace: number | undefined, frozen: boolean) {
+  if (frozen) {
+    return 0;
+  }
+  if (spec.pace && pace !== undefined) {
+    return Math.sign(pace || 1) * Math.max(MIN_STRIDE_RATE, Math.abs(pace) / (spec.pace * HUMAN_SCALE));
+  }
+  return 1;
+}
+
 function useMotion(mixer: THREE.AnimationMixer, animations: THREE.AnimationClip[], motion: HumanMotion) {
   const current = useRef<THREE.AnimationAction | null>(null);
   useEffect(() => {
@@ -202,10 +212,11 @@ function HumanWizardModel({
 
   useFrame((state, delta) => {
     const spec = MOTION_CLIPS[motion];
-    if (action.current && spec.pace && pace !== undefined) {
-      action.current.timeScale = Math.sign(pace || 1) * Math.max(MIN_STRIDE_RATE, Math.abs(pace) / (spec.pace * HUMAN_SCALE));
+    if (action.current) {
+      action.current.timeScale = clipRate(spec, pace, frozen);
     }
-    mixer.update(frozen ? 0 : Math.min(delta, 0.1));
+    // The mixer keeps running when frozen: a stopped mixer never fades the pose in, leaving the bind T-pose.
+    mixer.update(Math.min(delta, 0.1));
     const freeHandGrips = look.staff || hold ? model.grips.freeHand : [];
     for (const { bone, closed } of [...model.grips.wandHand, ...freeHandGrips]) {
       bone.quaternion.copy(closed);
