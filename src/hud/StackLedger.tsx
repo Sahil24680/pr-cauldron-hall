@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { type KeyboardEvent, useEffect, useRef } from "react";
 import type { PullRequest, Stage } from "../../shared/board";
-import { type CiState, findCiState } from "../../shared/stage";
+import { type CiState, daysSinceUpdate, findCiState, isStale, putStaleFirst } from "../../shared/stage";
 import { STAGE_THEMES } from "../lib/theme";
 import { stripTicketPrefix } from "../lib/title";
 import { describeAgo } from "../lib/useNow";
@@ -27,6 +27,8 @@ export function StackLedger({ stage, pullRequests, now, selected, onPick, onClos
   const list = useRef<HTMLOListElement>(null);
   const lastPicked = useRef<number | null>(null);
   const reading = selected !== null;
+  const rows = putStaleFirst(pullRequests, now);
+  const staleCount = rows.filter((pr) => isStale(pr, now)).length;
 
   // Narrow screens hide the ledger behind the detail card, so focus comes back to the last row read once the card closes.
   useEffect(() => {
@@ -70,11 +72,13 @@ export function StackLedger({ stage, pullRequests, now, selected, onPick, onClos
       </p>
       <h2 className="parchment-title">The Headmaster's ledger</h2>
       <p className="parchment-meta">
-        {pullRequests.length} pull requests, most recently updated first. <kbd>↑</kbd> <kbd>↓</kbd> to move, <kbd>Enter</kbd> to read, <kbd>Esc</kbd> to close.
+        {pullRequests.length} pull requests{staleCount > 0 ? `, ${staleCount} gone quiet and listed first` : ""}. <kbd>↑</kbd> <kbd>↓</kbd> to move,{" "}
+        <kbd>Enter</kbd> to read, <kbd>Esc</kbd> to close.
       </p>
       <ol ref={list} className="ledger-rows" onKeyDown={moveFocus}>
-        {pullRequests.map((pr) => {
+        {rows.map((pr) => {
           const ci = CI_LABELS[findCiState(pr)];
+          const stale = isStale(pr, now);
           return (
             <li key={pr.number}>
               <button
@@ -85,7 +89,10 @@ export function StackLedger({ stage, pullRequests, now, selected, onPick, onClos
                 onClick={() => pick(pr.number)}
               >
                 <span className="mono ledger-number">#{pr.number}</span>
-                <span className="ledger-title">{stripTicketPrefix(pr.title)}</span>
+                <span className="ledger-title">
+                  {stale && <span className="ledger-stale">Quiet {Math.floor(daysSinceUpdate(pr, now))} days</span>}
+                  {stripTicketPrefix(pr.title)}
+                </span>
                 <span className="ledger-meta">
                   {pr.authorName} · <span className={`ci-${ci.tone}`}>{ci.text}</span> · opened {describeAgo(pr.createdAt, now)} ago
                   {pr.mergeable === "CONFLICTING" ? " · in chains" : ""}

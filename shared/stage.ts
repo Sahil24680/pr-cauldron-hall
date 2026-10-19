@@ -43,3 +43,8 @@ export function daysSinceUpdate(pr: PullRequest, now: number) {
 export function isStale(pr: PullRequest, now: number) {
   return daysSinceUpdate(pr, now) > STALE_DAYS;
 }
+
+export function putStaleFirst(pullRequests: PullRequest[], now: number) {
+  const stale = pullRequests.filter((pr) => isStale(pr, now)).sort((a, b) => daysSinceUpdate(b, now) - daysSinceUpdate(a, now));
+  return [...stale, ...pullRequests.filter((pr) => !isStale(pr, now))];
+}

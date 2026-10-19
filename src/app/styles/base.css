@@ -42,6 +42,8 @@
   --detail-width: 23rem;
   --compact-panel-height: 45vh;
   --crest-height: 2.85rem;
+  --stone: #8d8f93;
+  --stone-ink: #1c1d20;
   --topbar-height: calc(var(--crest-height) + 2 * var(--space-2));
 
   --layer-settings-backdrop: 50;

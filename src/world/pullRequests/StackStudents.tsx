@@ -4,12 +4,12 @@ import * as THREE from "three";
 import type { Stage } from "../../../shared/board";
 import type { Appearance } from "../../../shared/cast";
 import { useCastMember } from "../../cast/castStore";
-import { type HumanMotion, HumanWizard, WizardCape, stagePalette, useCastLook } from "../characters/human";
+import { type HumanMotion, HumanWizard, STONE_PALETTE, WizardCape, stagePalette, turnedToStone, useCastLook } from "../characters/human";
 import type { WizardLook } from "../characters/wizard/look";
 import { type BookRun, CAULDRON_RADIUS, GRAND_CAULDRON_RADIUS, type Point, type Post } from "../layout";
 import { BOOK_CARRY_SPEED, carrierAt } from "./bookRun";
 
-type Props = { stage: Stage; brewers: Post[]; bookRun: BookRun; cauldron: Point };
+type Props = { stage: Stage; brewers: Post[]; bookRun: BookRun; cauldron: Point; oneTurnedToStone: boolean };
 type StudentProps = { look: WizardLook; appearance: Appearance };
 
 // The book floats just ahead of the carrier's chest, held up by a charm rather than by the walk cycle's swinging hands.
@@ -20,14 +20,14 @@ const box = new THREE.BoxGeometry(1, 1, 1);
 // Brew surface height of the grand cauldron, which is the normal one scaled up.
 const GRAND_BREW_Y = 0.62 * (GRAND_CAULDRON_RADIUS / CAULDRON_RADIUS);
 
-function Brewer({ look, appearance, post, cauldron }: StudentProps & { post: Post; cauldron: Point }) {
+function Brewer({ look, appearance, post, cauldron, stone }: StudentProps & { post: Post; cauldron: Point; stone: boolean }) {
   const capeAnchor = useRef<THREE.Group>(null);
   const pot = useMemo(() => new THREE.Vector3(0, GRAND_BREW_Y, Math.hypot(cauldron.x - post.spot.x, cauldron.z - post.spot.z)), [cauldron, post]);
   return (
     <>
       <WizardCape anchor={capeAnchor} look={look} appearance={appearance} />
       <group position={[post.spot.x, 0, post.spot.z]} rotation={[0, post.facing, 0]}>
-        <HumanWizard look={look} appearance={appearance} motion="stir" pot={pot} capeAnchor={capeAnchor} />
+        <HumanWizard look={look} appearance={appearance} motion={stone ? "brew" : "stir"} pot={pot} capeAnchor={capeAnchor} stone={stone} frozen={stone} />
       </group>
     </>
   );
@@ -71,10 +71,12 @@ function BookCarrier({ look, appearance, run, book }: StudentProps & { run: Book
 }
 
 // Generic helpers for a crowded stage: they share the stage's cast member and one look, and stand for no PR in particular.
-export function StackStudents({ stage, brewers, bookRun, cauldron }: Props) {
+export function StackStudents({ stage, brewers, bookRun, cauldron, oneTurnedToStone }: Props) {
   const appearance = useCastMember(stage);
   const palette = useMemo(() => stagePalette(stage), [stage]);
   const look = useCastLook(appearance, palette, true);
+  const stoneAppearance = useMemo(() => turnedToStone(appearance), [appearance]);
+  const stoneLook = useCastLook(stoneAppearance, STONE_PALETTE, true);
   const book = useMemo(
     () => ({
       cover: new THREE.MeshStandardMaterial({ color: "#6b1f24", roughness: 0.6, transparent: true }),
@@ -85,9 +87,19 @@ export function StackStudents({ stage, brewers, bookRun, cauldron }: Props) {
 
   return (
     <>
-      {brewers.map((post) => (
-        <Brewer key={`${post.spot.x}-${post.spot.z}`} look={look} appearance={appearance} post={post} cauldron={cauldron} />
-      ))}
+      {brewers.map((post, index) => {
+        const stone = oneTurnedToStone && index === 0;
+        return (
+          <Brewer
+            key={`${post.spot.x}-${post.spot.z}`}
+            look={stone ? stoneLook : look}
+            appearance={stone ? stoneAppearance : appearance}
+            post={post}
+            cauldron={cauldron}
+            stone={stone}
+          />
+        );
+      })}
       <BookCarrier look={look} appearance={appearance} run={bookRun} book={book} />
     </>
   );

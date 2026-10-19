@@ -2,11 +2,10 @@ import { type ThreeEvent, useFrame } from "@react-three/fiber";
 import { type RefObject, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import type { PullRequest } from "../../../shared/board";
-import type { Appearance } from "../../../shared/cast";
 import { type CiState, findCiState, findStage, isStale } from "../../../shared/stage";
 import { useCastMember } from "../../cast/castStore";
 import { stripTicketPrefix } from "../../lib/title";
-import { type HumanMotion, HumanWizard, STONE_PALETTE, WizardCape, stagePalette, useCastLook } from "../characters/human";
+import { type HumanMotion, HumanWizard, STONE_PALETTE, WizardCape, stagePalette, turnedToStone, useCastLook } from "../characters/human";
 import { WIZARD_HEIGHT } from "../characters/wizard/proportions";
 import { softDot } from "../effects/softDot";
 import { SceneLabel } from "../labels/SceneLabel";
@@ -29,7 +28,6 @@ type Props = {
   onHover: (number: number | null) => void;
 };
 
-const STONE_GREY = "#a6a8ab";
 // Seated on the Sitting clip's hips, scaled to the hall.
 const BROOM_SEAT_Y = 0.62;
 // Hands on the handle ahead of the seat, crouched forward as the wizard flies off.
@@ -103,10 +101,6 @@ function MagicStream({ ci, brewing, tip, wizard }: StreamProps) {
   });
 
   return <points ref={points} geometry={geometry} material={material} />;
-}
-
-function turnedToStone(appearance: Appearance): Appearance {
-  return { ...appearance, skin: STONE_GREY, hairColor: STONE_GREY, beardColor: STONE_GREY };
 }
 
 // Live wizards stir their cauldron; a stale one has turned to stone mid-spell.

@@ -2,6 +2,7 @@ import { type ThreeEvent, useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import type { PullRequest, Stage } from "../../../shared/board";
+import { isStale } from "../../../shared/stage";
 import { useCastMember } from "../../cast/castStore";
 import { STAGE_THEMES } from "../../lib/theme";
 import { HumanWizard, WizardCape, headmasterPalette, useCastLook } from "../characters/human";
@@ -41,6 +42,7 @@ export function Headmaster({ stack, pullRequests, now, aimed, onOpen }: Props) {
   const { stage, station, lectern } = stack;
   const brew = summariseBrew(pullRequests, now);
   const mood = brew ? moodOf(brew) : "calm";
+  const staleCount = pullRequests.filter((pr) => isStale(pr, now)).length;
 
   const appearance = useCastMember("headmaster");
   const palette = useMemo(() => headmasterPalette(stage), [stage]);
@@ -90,11 +92,12 @@ export function Headmaster({ stack, pullRequests, now, aimed, onOpen }: Props) {
               <div className={`stack-count mood-${mood}`}>
                 <span className="stack-count-number">{pullRequests.length}</span>
                 <span className="stack-count-label">{STAGE_THEMES[stage].plain}</span>
+                {staleCount > 0 && <span className="stack-count-stale">{staleCount} stale</span>}
               </div>
             </SceneLabel>
           </group>
         </group>
-        <StackStudents stage={stage} brewers={stack.brewers} bookRun={stack.bookRun} cauldron={station.cauldron} />
+        <StackStudents stage={stage} brewers={stack.brewers} bookRun={stack.bookRun} cauldron={station.cauldron} oneTurnedToStone={staleCount > 0} />
         <group position={[lectern.x, 0, lectern.z]}>
           <Lectern />
         </group>

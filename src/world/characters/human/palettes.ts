@@ -1,5 +1,5 @@
 import type { Stage } from "../../../../shared/board";
-import type { CastKey } from "../../../../shared/cast";
+import type { Appearance, CastKey } from "../../../../shared/cast";
 import { darken } from "../../../lib/color";
 import { STAGE_THEMES } from "../../../lib/theme";
 import type { Palette } from "./castLook";
@@ -45,6 +45,10 @@ const STONE = { robe: "#8d8f93", hat: "#77797d", trim: "#9a9ca0", ink: "#a6a8ab"
 
 // Stale PRs turn their wizard to stone.
 export const STONE_PALETTE: Palette = { robe: STONE.robe, hat: STONE.hat, trimBand: STONE.trim, ink: STONE.ink, motif: "moons" };
+
+export function turnedToStone(appearance: Appearance): Appearance {
+  return { ...appearance, skin: STONE.ink, hairColor: STONE.ink, beardColor: STONE.ink };
+}
 
 export function paletteFor(key: CastKey): Palette {
   if (key === "player") {

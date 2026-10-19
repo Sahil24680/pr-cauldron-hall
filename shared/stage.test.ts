@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { makePullRequest } from "../test/factories";
-import { findCiState, findStage, isReadyToMerge, isStale } from "./stage";
+import { findCiState, findStage, isReadyToMerge, isStale, putStaleFirst } from "./stage";
 
 const NOW = new Date("2026-10-19T00:00:00.000Z").getTime();
 
@@ -44,5 +44,17 @@ describe("isStale", () => {
   it("is stale after seven days without an update", () => {
     expect(isStale(makePullRequest({ updatedAt: "2026-10-11T23:00:00.000Z" }), NOW)).toBe(true);
     expect(isStale(makePullRequest({ updatedAt: "2026-10-13T00:00:00.000Z" }), NOW)).toBe(false);
+  });
+});
+
+describe("putStaleFirst", () => {
+  const daysAgo = (days: number) => new Date(NOW - days * 24 * 60 * 60 * 1000).toISOString();
+
+  it("lists stale PRs first, longest quiet at the top, then the rest in their order", () => {
+    const fresh = makePullRequest({ number: 1, updatedAt: daysAgo(1) });
+    const quiet = makePullRequest({ number: 2, updatedAt: daysAgo(9) });
+    const fresher = makePullRequest({ number: 3, updatedAt: daysAgo(0) });
+    const quietest = makePullRequest({ number: 4, updatedAt: daysAgo(30) });
+    expect(putStaleFirst([fresh, quiet, fresher, quietest], NOW).map((pr) => pr.number)).toEqual([4, 2, 1, 3]);
   });
 });

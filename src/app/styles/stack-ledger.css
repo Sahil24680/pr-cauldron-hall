@@ -66,6 +66,17 @@
   font-style: italic;
 }
 
+.ledger-stale {
+  display: inline-block;
+  margin-right: var(--space-2);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--stone);
+  color: var(--stone-ink);
+  font: 700 var(--text-xs) var(--body);
+  vertical-align: 0.1em;
+}
+
 .stack-count {
   display: flex;
   flex-direction: column;
@@ -88,6 +99,15 @@
 .stack-count-label {
   font: var(--text-xs) var(--body);
   letter-spacing: 0.06em;
+}
+
+.stack-count-stale {
+  margin-top: 0.15rem;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--stone);
+  color: var(--stone-ink);
+  font: 700 var(--text-xs) var(--body);
 }
 
 .mood-failing {
