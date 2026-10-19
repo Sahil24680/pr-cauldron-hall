@@ -44,10 +44,10 @@ export function TopBar({ repo, openCount, status, connected, now, mode, onModeCh
     <header className="topbar">
       <div className="brand panel">
         <div className="crest" aria-hidden="true">
-          CK
+          PR
         </div>
         <div className="titles">
-          <h1>Cauldron Keep</h1>
+          <h1>PR Cauldron Hall</h1>
           <p className="titles-line">
             <span className="repo">{repo}</span>
             <span>

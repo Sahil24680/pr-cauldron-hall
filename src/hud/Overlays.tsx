@@ -31,7 +31,7 @@ function PauseScreen() {
   return (
     <motion.div className="pause" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <div className="pause-card">
-        <h2>Cauldron Keep</h2>
+        <h2>PR Cauldron Hall</h2>
         <button type="button" className="accio pause-enter" onClick={requestLock}>
           Play
         </button>

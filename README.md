@@ -1,8 +1,8 @@
-# Cauldron Keep
+# PR Cauldron Hall
 
 Your open pull requests, brewing in a wizard's hall.
 
-Cauldron Keep turns the PRs you have open on GitHub into a small 3D game. Each PR is a wizard brewing at a cauldron, and each stage of review has its own corner of a candlelit castle hall. You walk the hall as your own wizard and see at a glance what is still a draft, what is waiting on reviewers, what needs changes and what is ready to merge.
+PR Cauldron Hall turns the PRs you have open on GitHub into a small 3D game. Each PR is a wizard brewing at a cauldron, and each stage of review has its own corner of a candlelit castle hall. You walk the hall as your own wizard and see at a glance what is still a draft, what is waiting on reviewers, what needs changes and what is ready to merge.
 
 ## Why I made it
 
@@ -33,7 +33,7 @@ It refreshes from GitHub every minute, and the "Accio PRs" button refreshes imme
 
 ## Setting it up
 
-You need Node 20 or newer, git and the [GitHub CLI](https://cli.github.com). Cauldron Keep reads GitHub through your own `gh` login, so it shows your PRs and only sees repositories your account can see.
+You need Node 20 or newer, git and the [GitHub CLI](https://cli.github.com). PR Cauldron Hall reads GitHub through your own `gh` login, so it shows your PRs and only sees repositories your account can see.
 
 1. Install the tools if you don't have them (macOS with Homebrew shown):
 
@@ -50,11 +50,11 @@ You need Node 20 or newer, git and the [GitHub CLI](https://cli.github.com). Cau
 3. Get the code and install it:
 
    ```bash
-   git clone https://github.com/Sahil24680/cauldron-keep.git
+   git clone https://github.com/Sahil24680/pr-cauldron-hall.git
    ```
 
    ```bash
-   cd cauldron-keep && npm install
+   cd pr-cauldron-hall && npm install
    ```
 
 4. Start it, naming the repository whose PRs you want to see:

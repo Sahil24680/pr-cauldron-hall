@@ -10,7 +10,7 @@ type Props = { deskTop: number; deskDepth: number };
 type Inscription = { points: Float32Array; delays: Float32Array; count: number; writing: number };
 
 const MESSAGES = [
-  ["Sahil's", "Cauldron Keep"],
+  ["Sahil's", "PR Cauldron Hall"],
   ["Mischief", "managed"],
   ["Brewing PRs", "since 2026"],
   ["Mind the", "merge conflicts"],
