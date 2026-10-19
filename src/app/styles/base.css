@@ -1,0 +1,168 @@
+:root {
+  --night: #0a0f24;
+  --panel: rgba(14, 18, 38, 0.82);
+  --panel-edge: rgba(201, 162, 77, 0.55);
+  --panel-shadow: 0 0.625rem 2.5rem rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --gold: #e0b354;
+  --gold-soft: #f3d891;
+  --gold-deep: #8a6522;
+  --gold-glow: rgba(224, 179, 84, 0.35);
+  --gold-wash: rgba(224, 179, 84, 0.15);
+  --ink-on-gold: #1d140c;
+  --ink: #efe6d2;
+  --ink-muted: #b4ab98;
+  --parchment: #efe1bf;
+  --parchment-ink: #3a2a18;
+  --good: #6fe39a;
+  --bad: #ff6f5c;
+  --busy: #b79bff;
+
+  --display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --body: "Crimson Pro", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  /* Root size tracks both axes so a short 14" screen and a tall ultrawide get the same density; 19px is where ultrawide stops growing. */
+  --root-size: clamp(14px, 0.35vw + 0.5vh + 6px, 19px);
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.3rem;
+  --text-xl: 1.5rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.375rem;
+  --radius: 0.625rem;
+  --radius-small: 0.5rem;
+  --radius-pill: 999px;
+
+  --gutter: var(--space-4);
+  --sidebar-width: 20rem;
+  --detail-width: 23rem;
+  --compact-panel-height: 45vh;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--root-size);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--night);
+  color: var(--ink);
+  font: var(--text-md) / 1.4 var(--body);
+  overflow: hidden;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--gold-soft);
+  outline-offset: 2px;
+}
+
+.mono {
+  font-family: var(--mono);
+  font-size: 0.86em;
+}
+
+.small {
+  font-size: 0.8em;
+}
+
+.app,
+.stage {
+  position: fixed;
+  inset: 0;
+}
+
+.hud {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--detail-width);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--gutter);
+  padding: var(--gutter);
+}
+
+.hud > * {
+  pointer-events: auto;
+}
+
+.right-column {
+  grid-column: 3;
+  grid-row: 2;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.right-column > * {
+  pointer-events: auto;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-edge);
+  border-radius: var(--radius);
+  box-shadow: var(--panel-shadow);
+  backdrop-filter: blur(8px);
+}
+
+@media (max-width: 1100px) {
+  .hud {
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  }
+
+  .right-column {
+    grid-column: 2;
+    align-items: flex-end;
+  }
+
+  .right-column > * {
+    width: min(var(--detail-width), 100%);
+  }
+}
+
+@media (max-width: 720px) {
+  .hud {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
+  }
+
+  .sidebar {
+    max-height: var(--compact-panel-height);
+  }
+
+  .right-column {
+    grid-column: 1;
+    grid-row: 3;
+    justify-content: flex-end;
+    align-items: stretch;
+  }
+
+  .right-column > * {
+    width: auto;
+    max-height: var(--compact-panel-height);
+  }
+}

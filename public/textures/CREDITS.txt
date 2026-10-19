@@ -1,0 +1,1 @@
+Fabric and leather detail maps from ambientCG (ambientcg.com), CC0 1.0 Universal: Fabric084 (cloth-fine), Fabric061 (cloth-weave), Leather030 (leather). Normal (OpenGL) and roughness maps, resized to 512.

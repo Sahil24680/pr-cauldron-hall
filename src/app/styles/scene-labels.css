@@ -1,0 +1,89 @@
+.scene-labels {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scene-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  will-change: transform;
+}
+
+.label-safe-area {
+  position: fixed;
+  inset: var(--gutter);
+  visibility: hidden;
+}
+
+.label-safe-area.beside-sidebar {
+  left: calc(var(--sidebar-width) + var(--gutter) * 2);
+}
+
+@media (max-width: 720px) {
+  .label-safe-area.beside-sidebar {
+    left: var(--gutter);
+  }
+}
+
+.tag {
+  max-width: 16rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0.1rem var(--space-2);
+  border-radius: 0.375rem;
+  font: var(--text-sm) var(--body);
+  color: var(--ink);
+  background: rgba(10, 15, 36, 0.85);
+  border: 1px solid var(--panel-edge);
+  transform: translateY(-4px);
+  transition: opacity 0.35s;
+}
+
+.tag.dimmed {
+  opacity: 0.14;
+}
+
+.tag.selected {
+  background: var(--gold);
+  color: var(--ink-on-gold);
+  border-color: var(--gold-soft);
+}
+
+.tag-number {
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+}
+
+.banner-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  width: 12rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #fff8e6;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.banner-count {
+  font: 900 3.4rem / 1 var(--display);
+}
+
+.banner-name {
+  font: 700 1.2rem var(--display);
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.banner-plain {
+  font: italic var(--text-md) var(--body);
+  opacity: 0.85;
+}
