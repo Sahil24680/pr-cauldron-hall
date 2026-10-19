@@ -5,7 +5,7 @@ import { useSettingsOpen } from "../lib/settingsMenu";
 import { STAGE_THEMES } from "../lib/theme";
 import { stripTicketPrefix } from "../lib/title";
 import type { ViewMode } from "../world/player/player";
-import { requestLock, usePointerLock } from "../world/player/pointerLock";
+import { usePointerLock } from "../world/player/pointerLock";
 
 const OATH = "I solemnly swear that I am up to no good.";
 const AIMING_CLASS = "first-person-aim";
@@ -23,19 +23,6 @@ export function Oath({ status, connected }: { status: PollStatus | null; connect
       <p className="oath-status">
         {status?.error ?? (connected ? "Sending owls to GitHub for every open PR…" : "Looking for the castle server on port 4848…")}
       </p>
-    </motion.div>
-  );
-}
-
-function PauseScreen() {
-  return (
-    <motion.div className="pause" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-      <div className="pause-card">
-        <h2>PR Cauldron Hall</h2>
-        <button type="button" className="accio pause-enter" onClick={requestLock}>
-          Play
-        </button>
-      </div>
     </motion.div>
   );
 }
@@ -69,7 +56,6 @@ export function WalkOverlay({ aimed, paused, mode }: WalkOverlayProps) {
     <>
       {aiming && <div className="wand-crosshair" aria-hidden="true" />}
       {mode === "third" && walking && !settingsOpen && <div className={`aim-reticle${aimed ? " on-target" : ""}`} aria-hidden="true" />}
-      <AnimatePresence>{paused && !locked && !unsupported && !settingsOpen && <PauseScreen />}</AnimatePresence>
       <AnimatePresence>
         {aimed && paused && !settingsOpen && (
           <motion.div className="walk-prompt" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }}>

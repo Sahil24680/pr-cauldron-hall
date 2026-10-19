@@ -41,6 +41,13 @@
   --sidebar-width: 20rem;
   --detail-width: 23rem;
   --compact-panel-height: 45vh;
+  --crest-height: 2.85rem;
+  --topbar-height: calc(var(--crest-height) + 2 * var(--space-2));
+
+  --layer-settings-backdrop: 50;
+  --layer-hud: 55;
+  --layer-settings: 60;
+  --layer-oath: 70;
   color-scheme: dark;
 }
 
@@ -87,7 +94,12 @@ a:focus-visible {
   font-size: 0.8em;
 }
 
-.app,
+/* Absolute, not fixed: a fixed .app would be a stacking context and keep the HUD under the menu's backdrop. */
+.app {
+  position: absolute;
+  inset: 0;
+}
+
 .stage {
   position: fixed;
   inset: 0;
@@ -96,6 +108,7 @@ a:focus-visible {
 .hud {
   position: fixed;
   inset: 0;
+  z-index: var(--layer-hud);
   pointer-events: none;
   display: grid;
   grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--detail-width);

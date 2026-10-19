@@ -135,6 +135,7 @@ function TabContent({ tab }: { tab: Tab }) {
 export function SettingsMenu() {
   const open = useSettingsOpen();
   const [tab, setTab] = useState<Tab>("help");
+  const docked = tab === "appearance" ? " docked" : "";
 
   useEffect(() => {
     if (open) {
@@ -151,12 +152,16 @@ export function SettingsMenu() {
         <AnimatePresence>
           {open && (
             <motion.div
-              className={`settings-backdrop${tab === "appearance" ? " docked" : ""}`}
+              key="backdrop"
+              className={`settings-backdrop${docked}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={closeSettings}
-            >
+            />
+          )}
+          {open && (
+            <motion.div key="layer" className={`settings-layer${docked}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <motion.dialog
                 open
                 className="settings parchment"
@@ -165,7 +170,6 @@ export function SettingsMenu() {
                 animate={{ y: 0, scale: 1, rotate: 0 }}
                 exit={{ y: 16, scale: 0.97 }}
                 transition={{ type: "spring", stiffness: 300, damping: 26 }}
-                onClick={(event) => event.stopPropagation()}
               >
                 <button type="button" className="parchment-close" onClick={closeSettings} aria-label="Close">
                   ×

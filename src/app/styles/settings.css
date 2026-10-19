@@ -23,15 +23,26 @@
   transform: rotate(60deg);
 }
 
+/* The top bar and panels sit between the dimmed scene and the menu, so they stay usable while it is open. */
 .settings-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 6, 16, 0.55);
+  backdrop-filter: blur(3px);
+  z-index: var(--layer-settings-backdrop);
+}
+
+.settings-layer {
   position: fixed;
   inset: 0;
   display: grid;
   place-items: center;
   padding: 24px;
-  background: rgba(4, 6, 16, 0.55);
-  backdrop-filter: blur(3px);
-  z-index: 50;
+  z-index: var(--layer-settings);
+  pointer-events: none;
+}
+
+.settings-layer > * {
   pointer-events: auto;
 }
 
@@ -155,11 +166,15 @@
 }
 
 .settings-backdrop.docked {
+  background: transparent;
+  backdrop-filter: none;
+}
+
+.settings-layer.docked {
   justify-items: end;
   align-items: start;
   padding: var(--gutter);
-  background: transparent;
-  backdrop-filter: none;
+  padding-top: calc(var(--gutter) * 2 + var(--topbar-height));
 }
 
 .docked .settings {

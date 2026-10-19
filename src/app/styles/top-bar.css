@@ -1,6 +1,5 @@
 .topbar {
   --crest-width: 2.5rem;
-  --crest-height: 2.85rem;
   --status-max-width: 24ch;
   grid-column: 1 / -1;
   display: flex;

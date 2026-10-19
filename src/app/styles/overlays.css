@@ -8,6 +8,7 @@
   padding: 24px;
   text-align: center;
   background: radial-gradient(ellipse at center, #1b2246, var(--night) 70%);
+  z-index: var(--layer-oath);
 }
 
 .oath-words {
@@ -30,53 +31,6 @@
     animation: none !important;
     transition: none !important;
   }
-}
-
-/* Pause screen, shown whenever the mouse is not captured */
-.pause {
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background: rgba(4, 6, 16, 0.35);
-  z-index: 30;
-  pointer-events: none;
-}
-
-.pause-card {
-  pointer-events: auto;
-}
-
-.pause-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  max-width: 420px;
-  padding: 26px 28px;
-  text-align: center;
-  background: var(--panel);
-  border: 1px solid var(--panel-edge);
-  border-radius: var(--radius);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
-}
-
-.pause-card h2 {
-  margin: 0;
-  font: 900 26px var(--display);
-  color: var(--gold-soft);
-}
-
-.pause-card p {
-  margin: 0;
-  color: var(--ink-muted);
-  font-size: 15.5px;
-}
-
-.pause-enter {
-  font-size: 16px;
-  padding: 10px 22px;
 }
 
 .visually-hidden {
