@@ -4,31 +4,15 @@ import * as THREE from "three";
 import { useCastMember } from "../../cast/castStore";
 import { type HumanMotion, HumanWizard, PLAYER_PALETTE, WizardCape, useCastLook } from "../characters/human";
 import { HIP_Y } from "../characters/wizard/proportions";
-import { Broom } from "../props/Broom";
 import { GROUNDED, motionFor, trackAirBeat } from "./avatarMotion";
-import { FLY_SPEED } from "./movement";
 import { PIVOT_HEIGHT } from "./orbit";
 import type { Player } from "./player";
-
-const broomWood = new THREE.MeshStandardMaterial({ color: "#8a5a2b", roughness: 0.8 });
-const broomStraw = new THREE.MeshStandardMaterial({ color: "#d2b06a", roughness: 0.9, side: THREE.DoubleSide });
-const broomCord = new THREE.MeshStandardMaterial({ color: "#5a3a20", roughness: 0.9 });
 
 const FLY_BLEND_RATE = 4;
 const BANK_PER_TURN_RATE = 0.22;
 const MAX_BANK = 0.55;
 const MAX_FLIGHT_PITCH = 0.35;
 const HOVER_HEIGHT = 0.45;
-// The Sitting clip's hips, scaled to the hall.
-const BROOM_SEAT_Y = 0.62;
-const BROOM_FORWARD = 0.1;
-// Where the hands close on the handle, ahead of the seat: right hand leading, left a fist behind it.
-const BROOM_GRIPS = {
-  left: new THREE.Vector3(0.05, BROOM_SEAT_Y + 0.05, BROOM_FORWARD + 0.42),
-  right: new THREE.Vector3(-0.04, BROOM_SEAT_Y + 0.06, BROOM_FORWARD + 0.56),
-};
-// A rider crouches over the handle, more as the broom picks up speed.
-const RIDING_LEAN = { resting: 0.25, atSpeed: 0.45 };
 // Moving backward faster than this plays the stride in reverse rather than moonwalking.
 const BACKING_UP = 0.1;
 // Closer than this the wizard would fill the view from inside its own hat, so it is not drawn.
@@ -45,7 +29,6 @@ export function Avatar({ player }: { player: RefObject<Player> }) {
   const figure = useRef<THREE.Group>(null);
   const root = useRef<THREE.Group>(null);
   const tilt = useRef<THREE.Group>(null);
-  const broom = useRef<THREE.Group>(null);
   const capeAnchor = useRef<THREE.Group>(null);
   const flight = useRef({ flyBlend: 0, bank: 0, pitch: 0, lastYaw: 0 });
   const airBeat = useRef(GROUNDED);
@@ -54,7 +37,6 @@ export function Avatar({ player }: { player: RefObject<Player> }) {
   const [motion, setMotion] = useState<HumanMotion>("idle");
   const currentMotion = useRef(motion);
   const [pace, setPace] = useState(0);
-  const [lean, setLean] = useState(RIDING_LEAN.resting);
 
   useFrame((state, rawDelta) => {
     const you = player.current;
@@ -88,17 +70,9 @@ export function Avatar({ player }: { player: RefObject<Player> }) {
       currentMotion.current = nextMotion;
       setMotion(nextMotion);
     }
-    const ridingLean = THREE.MathUtils.lerp(RIDING_LEAN.resting, RIDING_LEAN.atSpeed, Math.min(1, groundSpeed / FLY_SPEED));
-    if (Math.abs(ridingLean - lean) > 0.03) {
-      setLean(ridingLean);
-    }
     const signedPace = forwardSpeed < -BACKING_UP ? -groundSpeed : groundSpeed;
     if (Math.abs(signedPace - pace) > 0.25) {
       setPace(signedPace);
-    }
-    if (broom.current) {
-      broom.current.visible = m.flyBlend > 0.02;
-      broom.current.scale.setScalar(Math.max(0.001, m.flyBlend));
     }
   });
 
@@ -108,18 +82,7 @@ export function Avatar({ player }: { player: RefObject<Player> }) {
       <group ref={root}>
         <group ref={tilt} position={[0, HIP_Y, 0]}>
           <group position={[0, -HIP_Y, 0]}>
-            <group ref={broom} visible={false} position={[0, BROOM_SEAT_Y, BROOM_FORWARD]} rotation={[Math.PI / 2, 0, 0]}>
-              <Broom wood={broomWood} straw={broomStraw} cord={broomCord} />
-            </group>
-            <HumanWizard
-              look={look}
-              appearance={appearance}
-              motion={motion}
-              pace={pace}
-              capeAnchor={capeAnchor}
-              hold={motion === "ride" ? BROOM_GRIPS : undefined}
-              lean={motion === "ride" ? lean : 0}
-            />
+            <HumanWizard look={look} appearance={appearance} motion={motion} pace={pace} capeAnchor={capeAnchor} />
           </group>
         </group>
       </group>

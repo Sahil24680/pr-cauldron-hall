@@ -1,4 +1,18 @@
-export type HumanMotion = "idle" | "brew" | "stir" | "cast" | "walk" | "jog" | "sprint" | "jump" | "airborne" | "land" | "ride" | "lecture" | "holdStaff";
+export type HumanMotion =
+  | "idle"
+  | "brew"
+  | "stir"
+  | "cast"
+  | "walk"
+  | "jog"
+  | "sprint"
+  | "jump"
+  | "airborne"
+  | "land"
+  | "ride"
+  | "levitate"
+  | "lecture"
+  | "holdStaff";
 
 // `pace` is the ground speed (m/s, before HUMAN_SCALE) at which the clip's feet do not slide. Casting clips gesture
 // with an open hand, so there the wand is aimed along the forearm ("point") instead of across the fist. `stirs` circles
@@ -17,6 +31,7 @@ export const MOTION_CLIPS: Record<HumanMotion, MotionClip> = {
   airborne: { clip: "Jump_Loop", loop: true },
   land: { clip: "Jump_Land", loop: false },
   ride: { clip: "Sitting_Idle_Loop", loop: true },
+  levitate: { clip: "Jump_Loop", loop: true },
   lecture: { clip: "Idle_Talking_Loop", loop: true },
   holdStaff: { clip: "Idle_Torch_Loop", loop: true },
 };

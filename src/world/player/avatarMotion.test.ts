@@ -8,8 +8,8 @@ const FRAME = 1 / 60;
 describe("motionFor", () => {
   const grounded = startingPlayer();
 
-  it("rides the broom once flight has mostly blended in", () => {
-    expect(motionFor(grounded, 0.8, 0, GROUNDED)).toBe("ride");
+  it("levitates once flight has mostly blended in", () => {
+    expect(motionFor(grounded, 0.8, 0, GROUNDED)).toBe("levitate");
   });
 
   it("takes off, then hangs in the air while off the ground", () => {
@@ -48,7 +48,7 @@ describe("trackAirBeat", () => {
     expect(landingBeatFor(1)).toBe(0);
   });
 
-  it("does not count a broom descent as a fall", () => {
+  it("does not count a flying descent as a fall", () => {
     const riding = trackAirBeat(GROUNDED, { ...grounded, y: 0.2, verticalSpeed: -7, flying: true }, FRAME);
     expect(trackAirBeat(riding, grounded, FRAME).landingBeat).toBe(0);
   });

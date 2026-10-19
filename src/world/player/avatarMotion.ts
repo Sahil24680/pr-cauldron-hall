@@ -5,7 +5,7 @@ import type { Player } from "./player";
 export type AirBeat = { secondsInAir: number; secondsLanded: number; landingBeat: number; fallSpeed: number };
 
 const STANDING_STILL = 0.05;
-const RIDING = 0.5;
+const FLYING = 0.5;
 // Hall m/s where one stride clip hands over to the next, about midway between their natural paces (walk 1.05, jog
 // 3.85, sprint 5.9), so each plays near its own speed. The player's 3.6 m/s cruise is a jog.
 const GAIT_CHANGE = { walkToJog: 1.8, jogToSprint: 4.8 };
@@ -34,8 +34,8 @@ export function trackAirBeat(beat: AirBeat, you: Player, delta: number): AirBeat
 }
 
 export function motionFor(you: Player, flyBlend: number, groundSpeed: number, beat: AirBeat): HumanMotion {
-  if (flyBlend > RIDING) {
-    return "ride";
+  if (flyBlend > FLYING) {
+    return "levitate";
   }
   if (you.y > 0) {
     return beat.secondsInAir < TAKEOFF_SECONDS ? "jump" : "airborne";

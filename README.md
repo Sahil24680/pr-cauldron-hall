@@ -86,7 +86,7 @@ You need Node 20 or newer, git and the [GitHub CLI](https://cli.github.com). PR 
 | W A S D | Walk (the camera decides which way is forward) |
 | W W (double tap, hold) | Sprint, on the ground or flying |
 | Space | Jump |
-| Space Space (double tap) | Take off on your broom; again to land |
+| Space Space (double tap) | Levitate and fly; again to land |
 | Space, Shift / Ctrl / C | Fly up and down |
 | Mouse, scroll | Look around, zoom |
 | Click or E | Read the PR you are aiming at |
