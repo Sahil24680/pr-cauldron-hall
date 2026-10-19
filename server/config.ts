@@ -26,7 +26,11 @@ export type Config = {
 };
 
 export function loadConfig(environment: NodeJS.ProcessEnv = process.env): Config {
-  const parsed = environmentSchema.parse(environment);
+  const result = environmentSchema.safeParse(environment);
+  if (!result.success) {
+    throw new RangeError(result.error.issues.map((issue) => issue.message).join("\n"));
+  }
+  const parsed = result.data;
   const [owner, name] = parsed.PR_BOARD_REPO.split("/");
   if (!owner || !name || !REPO_PART.test(owner) || !REPO_PART.test(name)) {
     throw new RangeError(`PR_BOARD_REPO must look like owner/name, got "${parsed.PR_BOARD_REPO}"`);
