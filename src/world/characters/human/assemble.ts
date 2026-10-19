@@ -205,7 +205,10 @@ export function assembleHuman(bodySource: THREE.Object3D, wardrobe: Wardrobe, ap
   const landmarks = measureLandmarks(body.skeleton);
   const garments = garmentsFor(shapeKey, body, look.outfit, landmarks, bulk);
   const slots = garmentMaterials(look, appearance.accents);
-  wearLayer(body, garments.trousers, look.breeches);
+  const trouserSlots: THREE.Material[] = [];
+  trouserSlots[GARMENT_GROUP.fabric] = look.breeches;
+  trouserSlots[GARMENT_GROUP.inBoot] = look.boots;
+  wearLayer(body, garments.trousers, trouserSlots);
   wearLayer(body, garments.tunic, slots);
   wearLayer(body, garments.tunic, look.liningInside);
   wearLayer(body, garments.skirt, slots);

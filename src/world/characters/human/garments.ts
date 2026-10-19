@@ -10,7 +10,7 @@ import { buildSkirt } from "./skirt";
 // Trousers stop just inside the modeled boots: shoes with robes and coats, tall boots with long coats.
 const BOOT_TOP_Y: Record<Outfit, number> = { robe: 0.4, coat: 0.4, longcoat: 0.5 };
 const SLEEVE_FLARE: Record<Outfit, number> = { robe: 0.055, coat: 0.012, longcoat: 0.03 };
-const THICKNESS = { tunic: 0.016, trousers: 0.009 };
+const THICKNESS = { tunic: 0.016, trousers: 0.009, tuckedInBoots: 0.003 };
 const SMOOTHING = { tunic: 40, trousers: 16 };
 const CUFF_WIDTH = 0.05;
 const PANEL_HALF_WIDTH = 0.055;
@@ -197,9 +197,9 @@ function buildGarments(body: THREE.SkinnedMesh, outfit: Outfit, landmarks: BodyL
     uv: (point, region, group) => (group === GARMENT_GROUP.trim ? cuffUv(point) : bodyUv(point, region)),
   });
   const trousers = extractShell(body.geometry, regions, {
-    keep: (point, region) => (region === "leg" || (region === "torso" && point.y < hipY + SEAT_ABOVE_HIP)) && point.y > bootTop - 0.02,
-    offset: () => THICKNESS.trousers,
-    group: () => GARMENT_GROUP.fabric,
+    keep: (point, region) => region === "leg" || (region === "torso" && point.y < hipY + SEAT_ABOVE_HIP),
+    offset: (point) => (point.y < bootTop ? THICKNESS.tuckedInBoots : THICKNESS.trousers),
+    group: (point) => (point.y < bootTop ? GARMENT_GROUP.inBoot : GARMENT_GROUP.fabric),
     smoothing: SMOOTHING.trousers,
     uv: bodyUv,
   });
