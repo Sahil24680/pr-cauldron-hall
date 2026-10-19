@@ -2,7 +2,7 @@
 
 Your open pull requests, brewing in a wizard's hall.
 
-![The hall with all four stages, two of them crowded enough for a Headmaster](docs/hall.gif)
+![The hall with all four stages, two of them crowded enough for a Headmaster](docs/hall.webp)
 
 PR Cauldron Hall turns the PRs you have open on GitHub into a small 3D game. Each PR is a wizard brewing at a cauldron, and each stage of review has its own corner of a candlelit castle hall. You walk the hall as your own wizard and see at a glance what is still a draft, what is waiting on reviewers, what needs changes and what is ready to merge.
 
