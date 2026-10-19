@@ -122,8 +122,53 @@
   gap: 10px;
 }
 
-.gear-button[aria-pressed="true"] {
-  background: rgba(224, 179, 84, 0.15);
+.legend-mark {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border-radius: 3px;
+}
+
+.orb-green {
+  background: var(--good);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--good);
+}
+
+.orb-purple {
+  background: var(--busy);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--busy);
+}
+
+.orb-red {
+  background: var(--bad);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--bad);
+}
+
+.cloud {
+  background: #9aa0a8;
+  border-radius: 6px;
+}
+
+.stone {
+  background: #8d8f93;
+}
+
+.books {
+  background: linear-gradient(#7b3f2a 33%, #2e6b3a 33% 66%, #7b3f2a 66%);
+}
+
+.ring {
+  border: 3px solid #ffcc4d;
+  border-radius: 50%;
+}
+
+.thread {
+  border-top: 3px dashed #ffd166;
+  height: 0;
+  border-radius: 0;
 }
 
 .game-settings {

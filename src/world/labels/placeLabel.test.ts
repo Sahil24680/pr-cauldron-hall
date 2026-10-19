@@ -19,7 +19,7 @@ describe("placeLabel", () => {
     expect(placeLabel({ x: 600, y: 695 }, size, area)).toEqual({ left: 500, top: 676 });
   });
 
-  it("hides the label when its anchor is under the sidebar or off screen", () => {
+  it("hides the label when its anchor is outside the safe area", () => {
     expect(placeLabel({ x: 150, y: 400 }, size, area)).toBeNull();
     expect(placeLabel({ x: 1200, y: 400 }, size, area)).toBeNull();
     expect(placeLabel({ x: 600, y: -10 }, size, area)).toBeNull();

@@ -24,7 +24,7 @@ function LabelSlot({ id, observer, children }: SlotProps) {
   );
 }
 
-export function LabelLayer({ besideSidebar }: { besideSidebar: boolean }) {
+export function LabelLayer() {
   const labels = useSyncExternalStore(subscribeLabels, readLabels);
   const [observer] = useState(() => new ResizeObserver(measureLabelElements));
   const safeArea = useRef<HTMLDivElement>(null);
@@ -42,7 +42,7 @@ export function LabelLayer({ besideSidebar }: { besideSidebar: boolean }) {
 
   return (
     <div className="scene-labels" aria-hidden="true">
-      <div ref={safeArea} className={`label-safe-area${besideSidebar ? " beside-sidebar" : ""}`} />
+      <div ref={safeArea} className="label-safe-area" />
       {labels.map(({ id, content }) => (
         <LabelSlot key={id} id={id} observer={observer}>
           {content}

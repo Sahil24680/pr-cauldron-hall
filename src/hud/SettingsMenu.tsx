@@ -27,7 +27,6 @@ const CONTROLS: { keys: string[]; action: string }[] = [
   { keys: ["E"], action: "Read the PR or open the ledger under your aim" },
   { keys: ["Esc"], action: "Open this menu and get the mouse back, or close a card" },
   { keys: ["V", "F5"], action: "Switch between first and third person" },
-  { keys: ["M"], action: "Show or hide the side panels" },
 ];
 
 const LEGEND = [

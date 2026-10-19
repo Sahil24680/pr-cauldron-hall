@@ -11,16 +11,6 @@ export const STAGE_THEMES: Record<Stage, StageTheme> = {
   approved: { id: "approved", name: "Mischief Managed", plain: "Approved", banner: "#1f7a45", trim: "#e0c66a" },
 };
 
-const ROBE_COLORS = ["#7a1f2b", "#1f4f8f", "#2e6b3a", "#6b3f8f", "#9a5b1c", "#1f6f73", "#4f4f63", "#8f2f6b", "#5b6b1f"];
-
-export function robeColorOf(login: string) {
-  let hash = 0;
-  for (const char of login) {
-    hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
-  }
-  return ROBE_COLORS[hash % ROBE_COLORS.length] ?? "#4f4f63";
-}
-
 export function hashOf(value: number | string) {
   let hash = 2166136261;
   for (const char of String(value)) {

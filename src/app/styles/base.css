@@ -142,6 +142,22 @@ a:focus-visible {
   backdrop-filter: blur(8px);
 }
 
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.625rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--gold-glow);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  font-size: var(--text-sm);
+}
+
+.chip:hover {
+  border-color: var(--gold);
+}
+
 @media (max-width: 1100px) {
   .hud {
     grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
@@ -161,10 +177,6 @@ a:focus-visible {
   .hud {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto auto minmax(0, 1fr);
-  }
-
-  .sidebar {
-    max-height: var(--compact-panel-height);
   }
 
   .right-column {

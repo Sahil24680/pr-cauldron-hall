@@ -7,10 +7,9 @@ import { useCastMember } from "../../cast/castStore";
 import { type HumanMotion, HumanWizard, WizardCape, stagePalette, useCastLook } from "../characters/human";
 import type { WizardLook } from "../characters/wizard/look";
 import { type BookRun, CAULDRON_RADIUS, GRAND_CAULDRON_RADIUS, type Point, type Post } from "../layout";
-import { DIMMED_OPACITY } from "./CauldronPot";
 import { BOOK_CARRY_SPEED, carrierAt } from "./bookRun";
 
-type Props = { stage: Stage; brewers: Post[]; bookRun: BookRun; cauldron: Point; dimmed: boolean };
+type Props = { stage: Stage; brewers: Post[]; bookRun: BookRun; cauldron: Point };
 type StudentProps = { look: WizardLook; appearance: Appearance };
 
 // The book floats just ahead of the carrier's chest, held up by a charm rather than by the walk cycle's swinging hands.
@@ -72,7 +71,7 @@ function BookCarrier({ look, appearance, run, book }: StudentProps & { run: Book
 }
 
 // Generic helpers for a crowded stage: they share the stage's cast member and one look, and stand for no PR in particular.
-export function StackStudents({ stage, brewers, bookRun, cauldron, dimmed }: Props) {
+export function StackStudents({ stage, brewers, bookRun, cauldron }: Props) {
   const appearance = useCastMember(stage);
   const palette = useMemo(() => stagePalette(stage), [stage]);
   const look = useCastLook(appearance, palette, true);
@@ -83,13 +82,6 @@ export function StackStudents({ stage, brewers, bookRun, cauldron, dimmed }: Pro
     }),
     [],
   );
-  const materials = useMemo(() => [...Object.values(look), ...Object.values(book)].filter((material) => material instanceof THREE.Material), [look, book]);
-
-  useFrame(() => {
-    for (const material of materials) {
-      material.opacity = dimmed ? DIMMED_OPACITY : 1;
-    }
-  });
 
   return (
     <>

@@ -4,7 +4,6 @@ import { Bloom, EffectComposer, N8AO, Vignette } from "@react-three/postprocessi
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import type { PullRequest, Stage } from "../../shared/board";
 import { findStage } from "../../shared/stage";
-import { type Filters, isFiltering, matchesFilters } from "../board/filters";
 import { useLatest } from "../lib/useLatest";
 import { Burst, type BurstSpec } from "./effects/Burst";
 import { Hall } from "./hall/Hall";
@@ -24,7 +23,6 @@ type Props = {
   viewer: string;
   now: number;
   mode: ViewMode;
-  filters: Filters;
   selected: number | null;
   hovered: number | null;
   nearby: number | null;
@@ -55,7 +53,6 @@ export function Scene(props: Props) {
     viewer,
     now,
     mode,
-    filters,
     selected,
     hovered,
     nearby,
@@ -80,7 +77,6 @@ export function Scene(props: Props) {
     }
     return byStage;
   }, [pullRequests]);
-  const filtering = isFiltering(filters);
 
   const toggleFlight = useCallback(() => {
     const you = player.current;
@@ -162,17 +158,15 @@ export function Scene(props: Props) {
         if (!station || station.stacked) {
           return null;
         }
-        const dimmed = filtering && !matchesFilters(pr, filters, now);
         return (
           <group key={pr.number}>
-            <Cauldron pr={pr} at={station.cauldron} now={now} departure={null} dimmed={dimmed} aimed={nearby === pr.number} onSelect={onSelect} />
+            <Cauldron pr={pr} at={station.cauldron} now={now} departure={null} aimed={nearby === pr.number} onSelect={onSelect} />
             <Wizard
               pr={pr}
               station={station}
               now={now}
               arriving={arrivals.has(pr.number)}
               departure={null}
-              dimmed={dimmed}
               selected={selected === pr.number}
               showTag={selected === pr.number || hovered === pr.number || nearby === pr.number || pr.author === viewer}
               onSelect={onSelect}
@@ -189,7 +183,6 @@ export function Scene(props: Props) {
             stack={stack}
             pullRequests={stacked}
             now={now}
-            dimmed={filtering && !stacked.some((pr) => matchesFilters(pr, filters, now))}
             aimed={nearby === targetId({ kind: "stack", stage: stack.stage })}
             onOpen={onOpenStack}
           />
@@ -197,14 +190,13 @@ export function Scene(props: Props) {
       })}
       {departing.map((wizard) => (
         <group key={wizard.key}>
-          <Cauldron pr={wizard.pr} at={wizard.station.cauldron} now={now} departure={wizard.departure} dimmed={false} aimed={false} onSelect={NO_SELECTION} />
+          <Cauldron pr={wizard.pr} at={wizard.station.cauldron} now={now} departure={wizard.departure} aimed={false} onSelect={NO_SELECTION} />
           <Wizard
             pr={wizard.pr}
             station={wizard.station}
             now={now}
             arriving={false}
             departure={wizard.departure}
-            dimmed={false}
             selected={false}
             showTag={false}
             onSelect={NO_SELECTION}

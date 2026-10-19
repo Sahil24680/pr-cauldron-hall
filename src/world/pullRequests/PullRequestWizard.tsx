@@ -23,7 +23,6 @@ type Props = {
   now: number;
   arriving: boolean;
   departure: Departure | null;
-  dimmed: boolean;
   selected: boolean;
   showTag: boolean;
   onSelect: (number: number) => void;
@@ -37,7 +36,6 @@ const BROOM_SEAT_Y = 0.62;
 const BROOM_GRIPS = { left: new THREE.Vector3(0.05, BROOM_SEAT_Y + 0.05, 0.42), right: new THREE.Vector3(-0.04, BROOM_SEAT_Y + 0.06, 0.56) };
 const RIDING_LEAN = 0.4;
 const WALK_SPEED = 1.1;
-const DIMMED_OPACITY = 0.14;
 const FADE_PER_SECOND = 2.5;
 const BROOM_TAKEOFF_SECONDS = 0.5;
 const VANISH_SECONDS = 0.8;
@@ -122,7 +120,7 @@ function motionFor(walking: boolean, riding: boolean, stale: boolean): HumanMoti
   return stale ? "brew" : "stir";
 }
 
-export function Wizard({ pr, station, now, arriving, departure, dimmed, selected, showTag, onSelect, onHover }: Props) {
+export function Wizard({ pr, station, now, arriving, departure, selected, showTag, onSelect, onHover }: Props) {
   const stale = isStale(pr, now);
   const ci = findCiState(pr);
   const stage = findStage(pr);
@@ -208,7 +206,7 @@ export function Wizard({ pr, station, now, arriving, departure, dimmed, selected
     const brewing = !walking && !departure;
     brewingRef.current = brewing && !stale;
 
-    const targetOpacity = (departure === "merged" && s.departedFor > 2.4 ? 0 : 1) * (dimmed ? DIMMED_OPACITY : 1);
+    const targetOpacity = departure === "merged" && s.departedFor > 2.4 ? 0 : 1;
     s.opacity += Math.sign(targetOpacity - s.opacity) * Math.min(Math.abs(targetOpacity - s.opacity), delta * FADE_PER_SECOND);
     for (const material of materials) {
       material.opacity = s.opacity;
@@ -278,7 +276,7 @@ export function Wizard({ pr, station, now, arriving, departure, dimmed, selected
 
         {showTag && !departure && (
           <SceneLabel position={[0, WIZARD_HEIGHT + 0.3, 0]}>
-            <div className={`tag${selected ? " selected" : ""}${dimmed ? " dimmed" : ""}`}>
+            <div className={`tag${selected ? " selected" : ""}`}>
               <span className="tag-number">#{pr.number}</span> {stripTicketPrefix(pr.title)}
             </div>
           </SceneLabel>

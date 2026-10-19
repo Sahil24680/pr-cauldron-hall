@@ -11,10 +11,9 @@ type Props = {
   now: number;
   mode: ViewMode;
   onModeChange: (mode: ViewMode) => void;
-  panelsOpen: boolean;
-  onTogglePanels: () => void;
   onRefresh: () => void;
   onHome: () => void;
+  onPlayDemo: () => void;
 };
 
 function describeLiveness(status: PollStatus | null, connected: boolean, now: number) {
@@ -38,7 +37,7 @@ const MODES: { id: ViewMode; label: string; title: string }[] = [
   { id: "first", label: "First", title: "First person (V)" },
 ];
 
-export function TopBar({ repo, openCount, status, connected, now, mode, onModeChange, panelsOpen, onTogglePanels, onRefresh, onHome }: Props) {
+export function TopBar({ repo, openCount, status, connected, now, mode, onModeChange, onRefresh, onHome, onPlayDemo }: Props) {
   const liveness = describeLiveness(status, connected, now);
   return (
     <header className="topbar">
@@ -79,24 +78,12 @@ export function TopBar({ repo, openCount, status, connected, now, mode, onModeCh
         <button type="button" className="ghost-button" onClick={onHome}>
           Home
         </button>
+        <button type="button" className="ghost-button" onClick={onPlayDemo}>
+          Demo
+        </button>
         <button type="button" className={`accio${status?.refreshing ? " casting" : ""}`} onClick={onRefresh} disabled={status?.refreshing}>
           <span className="accio-wand" aria-hidden="true" />
           Accio PRs
-        </button>
-        <button
-          type="button"
-          className="gear-button"
-          aria-label={panelsOpen ? "Hide side panels (M)" : "Show side panels (M)"}
-          aria-pressed={panelsOpen}
-          title="Side panels (M)"
-          onClick={onTogglePanels}
-        >
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-            <path
-              fill="currentColor"
-              d="M4 4.5A1.5 1.5 0 0 1 5.5 3H11v17H5.5A1.5 1.5 0 0 1 4 18.5zm9-1.5h5.5A1.5 1.5 0 0 1 20 4.5v14a1.5 1.5 0 0 1-1.5 1.5H13zM6 6v2h3V6zm9 0v2h3V6zm-9 4v2h3v-2zm9 0v2h3v-2z"
-            />
-          </svg>
         </button>
         <SettingsMenu />
       </div>

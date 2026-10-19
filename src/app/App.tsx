@@ -1,11 +1,9 @@
 import { AnimatePresence, MotionConfig } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { PullRequest, Stage } from "../../shared/board";
-import { useFilters } from "../board/filters";
 import { useBoard } from "../board/useBoard";
 import { DetailPanel } from "../hud/DetailPanel";
 import { type AimedTarget, Oath, WalkOverlay } from "../hud/Overlays";
-import { Sidebar } from "../hud/Sidebar";
 import { StackLedger } from "../hud/StackLedger";
 import { TopBar } from "../hud/TopBar";
 import { closeSettings, isSettingsOpen, openSettings, toggleSettingsFromEscape, useSettingsOpen } from "../lib/settingsMenu";
@@ -21,7 +19,6 @@ import { useWorldEvents } from "../world/useWorldEvents";
 import { SceneErrorBoundary } from "./SceneErrorBoundary";
 
 const CLOCK_TICK_MS = 15_000;
-const WIDE_SCREEN_PX = 1100;
 const NO_PULL_REQUESTS: PullRequest[] = [];
 const STACK_DEMO_FLAG = "stackDemo";
 const STACK_DEMO_COPIES = 6;
@@ -58,14 +55,12 @@ function findAimed(target: Target | null, pullRequests: PullRequest[]): AimedTar
 export function App() {
   const { board, status, connected, fresh, refresh, playDemo } = useBoard();
   const now = useNow(CLOCK_TICK_MS);
-  const [filters, setFilters] = useFilters();
   const [selected, setSelected] = useState<number | null>(null);
   const [hovered, setHovered] = useState<number | null>(null);
   const [focus, setFocus] = useState<CameraFocus>({ id: 0, target: { kind: "home" } });
   const [mode, setMode] = useState<ViewMode>("third");
   const [nearby, setNearby] = useState<number | null>(null);
   const [ledger, setLedger] = useState<Stage | null>(null);
-  const [panelsOpen, setPanelsOpen] = useState(() => window.innerWidth >= WIDE_SCREEN_PX);
 
   const pullRequests = useMemo(() => withStackDemo(board?.pullRequests ?? NO_PULL_REQUESTS), [board]);
   const { stations, stacks } = useMemo(() => layoutHall(pullRequests), [pullRequests]);
@@ -123,9 +118,6 @@ export function App() {
       if (event.code === "KeyE" && aimed?.kind === "stack") {
         setLedger((current) => (current === aimed.stage ? null : aimed.stage));
       }
-      if (event.code === "KeyM") {
-        setPanelsOpen((open) => !open);
-      }
       if (VIEW_TOGGLE_KEYS.includes(event.code)) {
         setMode(mode === "third" ? "first" : "third");
       }
@@ -162,7 +154,6 @@ export function App() {
                 viewer={board.viewer}
                 now={now}
                 mode={mode}
-                filters={filters}
                 selected={selected}
                 hovered={hovered}
                 nearby={nearby}
@@ -179,7 +170,7 @@ export function App() {
               />
             </SceneErrorBoundary>
           )}
-          <LabelLayer besideSidebar={Boolean(board) && panelsOpen} />
+          <LabelLayer />
         </div>
 
         <div className="hud">
@@ -191,22 +182,10 @@ export function App() {
             now={now}
             mode={mode}
             onModeChange={setMode}
-            panelsOpen={panelsOpen}
-            onTogglePanels={() => setPanelsOpen((open) => !open)}
             onRefresh={refresh}
             onHome={() => focusOn({ kind: "home" })}
+            onPlayDemo={playDemo}
           />
-          {board && panelsOpen && (
-            <Sidebar
-              pullRequests={pullRequests}
-              viewer={board.viewer}
-              now={now}
-              filters={filters}
-              onFiltersChange={setFilters}
-              onPickTable={pickZone}
-              onPlayDemo={playDemo}
-            />
-          )}
           <AnimatePresence>
             {ledgerStack && (
               <StackLedger

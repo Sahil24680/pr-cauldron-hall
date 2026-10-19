@@ -27,7 +27,7 @@ Each wizard and cauldron carries more detail:
 - **Leaving on a broom:** a PR that was just merged flies off; a closed one vanishes.
 - **The Headmaster:** when a zone has more than four PRs, a Headmaster stands at a grand cauldron with students helping, and clicking him opens a ledger of every PR in that zone.
 
-Click a wizard (or aim at it and press E) to open its card: CI checks, merge state, lines changed split into code and tests, branch, reviews, any PRs stacked on it, and a link to GitHub. The side panel counts PRs per zone and has search and quick filters (ready to merge, failing CI, conflicts, stale, large PRs).
+Click a wizard (or aim at it and press E) to open its card: CI checks, merge state, lines changed split into code and tests, branch, reviews, any PRs stacked on it, and a link to GitHub.
 
 It refreshes from GitHub every minute, and the "Accio PRs" button refreshes immediately.
 
@@ -89,7 +89,6 @@ You need Node 20 or newer, git and the [GitHub CLI](https://cli.github.com). PR 
 | Mouse, scroll | Look around, zoom |
 | Click or E | Read the PR you are aiming at |
 | V or F5 | Switch between third and first person |
-| M | Show or hide the side panel |
 | Esc | Open the menu and get your mouse back |
 
 In first person the mouse is captured so it can't leave the window; press Esc to get the cursor back. The full list is in the menu under Help.

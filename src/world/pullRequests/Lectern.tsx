@@ -1,10 +1,6 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
-import { DIMMED_OPACITY } from "./CauldronPot";
-
-type Props = { dimmed: boolean };
-
 export const PAGE_TURN_EVERY_SECONDS = 5;
 export const PAGE_TURN_SECONDS = 0.9;
 const TOP_Y = 1.08;
@@ -21,7 +17,7 @@ export function pageTurnProgress(time: number) {
 }
 
 // The reading desk faces its reader, who stands on its -Z side.
-export function Lectern({ dimmed }: Props) {
+export function Lectern() {
   const materials = useMemo(
     () => ({
       wood: new THREE.MeshStandardMaterial({ color: "#5a3a22", roughness: 0.7, transparent: true }),
@@ -34,9 +30,6 @@ export function Lectern({ dimmed }: Props) {
   const page = useRef<THREE.Group>(null);
 
   useFrame((state) => {
-    for (const material of Object.values(materials)) {
-      material.opacity = dimmed ? DIMMED_OPACITY : 1;
-    }
     if (page.current) {
       page.current.rotation.z = Math.PI * Math.sin((pageTurnProgress(state.clock.elapsedTime) * Math.PI) / 2);
     }

@@ -8,13 +8,13 @@ import { HumanWizard, WizardCape, headmasterPalette, useCastLook } from "../char
 import { WIZARD_HEIGHT } from "../characters/wizard/proportions";
 import { SceneLabel } from "../labels/SceneLabel";
 import { CAULDRON_RADIUS, GRAND_CAULDRON_RADIUS, type Stack } from "../layout";
-import { CauldronPot, DIMMED_OPACITY } from "./CauldronPot";
+import { CauldronPot } from "./CauldronPot";
 import { Lectern } from "./Lectern";
 import { StackStudents } from "./StackStudents";
 import { type Brew, summariseBrew } from "./brew";
 import { targetId, useAimTarget } from "./targets";
 
-type Props = { stack: Stack; pullRequests: PullRequest[]; now: number; dimmed: boolean; aimed: boolean; onOpen: (stage: Stage) => void };
+type Props = { stack: Stack; pullRequests: PullRequest[]; now: number; aimed: boolean; onOpen: (stage: Stage) => void };
 type Mood = "failing" | "ready" | "running" | "calm";
 
 const MOOD_COLORS: Record<Mood, string> = { failing: "#ff4b3a", ready: "#ffd166", running: "#b48cff", calm: "#8fd3ff" };
@@ -37,7 +37,7 @@ function moodOf(brew: Brew): Mood {
   return brew.ci === "running" ? "running" : "calm";
 }
 
-export function Headmaster({ stack, pullRequests, now, dimmed, aimed, onOpen }: Props) {
+export function Headmaster({ stack, pullRequests, now, aimed, onOpen }: Props) {
   const { stage, station, lectern } = stack;
   const brew = summariseBrew(pullRequests, now);
   const mood = brew ? moodOf(brew) : "calm";
@@ -48,7 +48,6 @@ export function Headmaster({ stack, pullRequests, now, dimmed, aimed, onOpen }: 
   look.staffGem.color.set(MOOD_COLORS[mood]);
   const halo = useMemo(() => new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }), []);
   halo.color.set(MOOD_COLORS[mood]);
-  const bodyMaterials = useMemo(() => Object.values(look).filter((material) => material instanceof THREE.Material), [look]);
 
   const root = useRef<THREE.Group>(null);
   useAimTarget(root, targetId({ kind: "stack", stage }));
@@ -57,11 +56,7 @@ export function Headmaster({ stack, pullRequests, now, dimmed, aimed, onOpen }: 
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
-    const opacity = dimmed ? DIMMED_OPACITY : 1;
-    for (const material of bodyMaterials) {
-      material.opacity = opacity;
-    }
-    halo.opacity = (aimed ? HALO.aimedOpacity : HALO.opacity) * opacity + Math.sin(t * 2) * HALO.pulse;
+    halo.opacity = (aimed ? HALO.aimedOpacity : HALO.opacity) + Math.sin(t * 2) * HALO.pulse;
 
     if (count.current) {
       count.current.position.y = COUNT_HEIGHT + Math.sin(t * 1.4) * COUNT_BOB;
@@ -99,13 +94,13 @@ export function Headmaster({ stack, pullRequests, now, dimmed, aimed, onOpen }: 
             </SceneLabel>
           </group>
         </group>
-        <StackStudents stage={stage} brewers={stack.brewers} bookRun={stack.bookRun} cauldron={station.cauldron} dimmed={dimmed} />
+        <StackStudents stage={stage} brewers={stack.brewers} bookRun={stack.bookRun} cauldron={station.cauldron} />
         <group position={[lectern.x, 0, lectern.z]}>
-          <Lectern dimmed={dimmed} />
+          <Lectern />
         </group>
         {brew && (
           <group position={[station.cauldron.x, 0, station.cauldron.z]} scale={GRAND_SCALE}>
-            <CauldronPot brew={brew} dimmed={dimmed} aimed={aimed} surging={CALM} />
+            <CauldronPot brew={brew} aimed={aimed} surging={CALM} />
           </group>
         )}
       </group>

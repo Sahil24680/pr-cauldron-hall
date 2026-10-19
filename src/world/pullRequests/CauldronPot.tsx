@@ -10,7 +10,7 @@ import { Chains } from "./Chains";
 import type { Brew } from "./brew";
 import { MAGIC_COLORS } from "./magicColors";
 
-type Props = { brew: Brew; dimmed: boolean; aimed: boolean; surging: { current: boolean } };
+type Props = { brew: Brew; aimed: boolean; surging: { current: boolean } };
 
 const BUBBLE_COUNT = 7;
 const SMOKE_COUNT = 10;
@@ -22,7 +22,6 @@ const BUBBLE_RISE = 0.45;
 const BUBBLE_SPEED: Record<CiState, number> = { running: 1.6, passing: 0.6, failing: 1, none: 0.25 };
 const SURGE_SPEED = 4;
 const SURGE_RISE = 4;
-export const DIMMED_OPACITY = 0.14;
 const AIM_GLOW = { color: "#ffe9a8", opacity: 0.4, pulse: 0.12, speed: 4 };
 
 const box = new THREE.BoxGeometry(1, 1, 1);
@@ -47,7 +46,7 @@ function brewColors({ stale, ci, ready }: Brew) {
   return { surface: MAGIC_COLORS[ci], bubble: MAGIC_COLORS[ci] };
 }
 
-export function CauldronPot({ brew, dimmed, aimed, surging }: Props) {
+export function CauldronPot({ brew, aimed, surging }: Props) {
   const { ci, stale, ready, conflicted, heavy, stageColor } = brew;
   const { surface, bubble } = brewColors(brew);
 
@@ -104,11 +103,6 @@ export function CauldronPot({ brew, dimmed, aimed, surging }: Props) {
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
-    const opacity = dimmed ? DIMMED_OPACITY : 1;
-    for (const material of Object.values(materials)) {
-      material.opacity = opacity;
-    }
-
     const surge = surging.current;
     const speed = surge ? SURGE_SPEED : BUBBLE_SPEED[ci];
     bubbles.current?.children.forEach((bubble, index) => {
@@ -133,7 +127,7 @@ export function CauldronPot({ brew, dimmed, aimed, surging }: Props) {
       flash?.position.set(x, BREW_Y + lift, z);
       flash?.scale.setScalar(POP_FLASH.size * (1.5 - flashing * 0.5));
       if (flashMaterial) {
-        flashMaterial.opacity = stale ? 0 : flashing * POP_FLASH.opacity * opacity;
+        flashMaterial.opacity = stale ? 0 : flashing * POP_FLASH.opacity;
       }
     });
     if (smoke.current) {
@@ -149,7 +143,7 @@ export function CauldronPot({ brew, dimmed, aimed, surging }: Props) {
         const drift = SMOKE.sway * (0.5 + progress);
         puff.position.set(Math.sin(phase + t * 0.7) * drift, BREW_Y + SMOKE.base + rise, Math.cos(phase + t * 0.5) * drift);
         puff.scale.setScalar(size);
-        material.opacity = fade * SMOKE.opacity * opacity;
+        material.opacity = fade * SMOKE.opacity;
         material.rotation = phase + t * SMOKE.spin * (index % 2 === 0 ? 1 : -1);
       });
     }
@@ -164,7 +158,7 @@ export function CauldronPot({ brew, dimmed, aimed, surging }: Props) {
       ring.current.scale.setScalar(1 + Math.sin(t * 3) * 0.05);
     }
     if (aimRim.current) {
-      aimRim.current.visible = aimed && !dimmed;
+      aimRim.current.visible = aimed;
       aimGlow.opacity = AIM_GLOW.opacity + Math.sin(t * AIM_GLOW.speed) * AIM_GLOW.pulse;
     }
   });

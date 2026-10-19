@@ -8,12 +8,12 @@ import type { Departure } from "./PullRequestWizard";
 import { brewOf } from "./brew";
 import { usePullRequestTarget } from "./targets";
 
-type Props = { pr: PullRequest; at: Point; now: number; departure: Departure | null; dimmed: boolean; aimed: boolean; onSelect: (number: number) => void };
+type Props = { pr: PullRequest; at: Point; now: number; departure: Departure | null; aimed: boolean; onSelect: (number: number) => void };
 
 const MOVE_SHRINK_PER_SECOND = 4;
 const ERUPTION_SECONDS = 1.6;
 
-export function Cauldron({ pr, at, now, departure, dimmed, aimed, onSelect }: Props) {
+export function Cauldron({ pr, at, now, departure, aimed, onSelect }: Props) {
   const root = useRef<THREE.Group>(null);
   usePullRequestTarget(root, departure ? null : pr.number);
   const erupting = useRef(false);
@@ -58,7 +58,7 @@ export function Cauldron({ pr, at, now, departure, dimmed, aimed, onSelect }: Pr
       }}
       onPointerOut={() => document.body.classList.remove("wand-hover")}
     >
-      <CauldronPot brew={brewOf(pr, now)} dimmed={dimmed} aimed={aimed} surging={erupting} />
+      <CauldronPot brew={brewOf(pr, now)} aimed={aimed} surging={erupting} />
     </group>
   );
 }
