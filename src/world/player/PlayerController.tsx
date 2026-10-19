@@ -64,7 +64,8 @@ const ZOOM_PER_WHEEL_PIXEL = 0.0015;
 const WHEEL_LINE_PIXELS = 16;
 const FOV_EASE = 6;
 const FOV_EPSILON = 0.01;
-const READ_REACH = 5;
+// Far enough to read any wizard in the hall from anywhere you can see it.
+const READ_REACH = 40;
 const AIM_EVERY_FRAMES = 3;
 const SCREEN_CENTER = new THREE.Vector2(0, 0);
 const NO_KEYS = new Set<string>();
