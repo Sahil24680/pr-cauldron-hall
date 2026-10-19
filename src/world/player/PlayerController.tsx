@@ -171,20 +171,24 @@ export function PlayerController({ mode, player, obstacles, bounds, stations, on
       }
     };
     const blockMenu = (event: MouseEvent) => event.preventDefault();
-    // Without pointer lock the view turns only while a button is held, so the cursor can rest on a wizard to click it.
+    const forgetCursor = () => {
+      pointer.current = null;
+    };
+    // Without pointer lock (the in-app browser refuses it) the view follows the cursor over the canvas, as it always has.
     const look = (event: MouseEvent) => {
       const locked = document.pointerLockElement === canvas;
       if (event.buttons === 0) {
         press.current.held = false;
       }
-      const dragging = !locked && press.current.held;
-      if (isPaused() || !(locked || dragging)) {
+      if (isPaused() || (!locked && event.target !== canvas)) {
         pointer.current = null;
         return;
       }
-      if (dragging) {
+      if (!locked) {
         pointer.current = cursorOnCanvas(event);
-        press.current.moved += Math.abs(event.movementX) + Math.abs(event.movementY);
+        if (press.current.held) {
+          press.current.moved += Math.abs(event.movementX) + Math.abs(event.movementY);
+        }
       }
       const movementX = THREE.MathUtils.clamp(event.movementX, -MOST_LOOK_PIXELS, MOST_LOOK_PIXELS);
       const movementY = THREE.MathUtils.clamp(event.movementY, -MOST_LOOK_PIXELS, MOST_LOOK_PIXELS);
@@ -207,6 +211,7 @@ export function PlayerController({ mode, player, obstacles, bounds, stations, on
     canvas.addEventListener("mousedown", pressButton);
     canvas.addEventListener("click", click);
     canvas.addEventListener("contextmenu", blockMenu);
+    canvas.addEventListener("mouseleave", forgetCursor);
     canvas.addEventListener("wheel", zoom, { passive: false });
     window.addEventListener("mouseup", releaseButton);
     window.addEventListener("keydown", captureOnMove);
@@ -215,6 +220,7 @@ export function PlayerController({ mode, player, obstacles, bounds, stations, on
       canvas.removeEventListener("mousedown", pressButton);
       canvas.removeEventListener("click", click);
       canvas.removeEventListener("contextmenu", blockMenu);
+      canvas.removeEventListener("mouseleave", forgetCursor);
       canvas.removeEventListener("wheel", zoom);
       window.removeEventListener("mouseup", releaseButton);
       window.removeEventListener("keydown", captureOnMove);
@@ -359,7 +365,7 @@ export function PlayerController({ mode, player, obstacles, bounds, stations, on
   // Without pointer lock a dragged cursor stops at the screen edge, so holding it there keeps the view turning.
   const turnAtScreenEdge = (state: Player, delta: number) => {
     const at = pointer.current;
-    if (!at || document.pointerLockElement || !press.current.held) {
+    if (!at || document.pointerLockElement || isPaused()) {
       return;
     }
     const pitchDirection = getPlayerSettings().invertY ? 1 : -1;
