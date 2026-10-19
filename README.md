@@ -25,13 +25,13 @@ Each wizard and cauldron carries more detail:
 
 - **Brew colour:** CI state. Green for passing, purple and bubbling for running, red with smoke for failing.
 - **Chains** around a cauldron: the PR has a merge conflict.
-- **Stone:** the PR has gone stale (no activity for a while).
+- **Stone:** the PR has gone stale, with no commits, comments or reviews for more than 7 days. Any activity brings the wizard back.
 - **Leaving on a broom:** a PR that was just merged flies off; a closed one vanishes.
-- **The Headmaster:** when a zone has more than four PRs, a Headmaster stands at a grand cauldron with students helping, and clicking him opens a ledger of every PR in that zone.
+- **The Headmaster:** when a zone has more than four PRs, a Headmaster stands at a grand cauldron with students helping. The tag over him counts the zone's PRs and how many are stale, and one student turns to stone while any of them are. Clicking him opens a ledger of every PR in that zone with the stale ones listed first, each marked with how many days it has been quiet, so the PRs that need a nudge are at the top.
 
 Click a wizard (or aim at it and press E) to open its card: CI checks, merge state, lines changed split into code and tests, branch, reviews, any PRs stacked on it, and a link to GitHub.
 
-It refreshes from GitHub every minute, and the "Accio PRs" button refreshes immediately.
+It refreshes from GitHub every minute, and the "Accio PRs" button refreshes immediately. The "Demo" button plays a short scripted run on your screen only (a PR gets approved, one fails CI, one merges, a new one arrives, one gets changes requested, one hits a conflict, one closes) and then puts your real board back. Opening the page with `?stackDemo` adds draft copies of a PR so you can see the Headmaster without six real drafts.
 
 ## Setting it up
 
